@@ -41,7 +41,6 @@ class Graph:
         """
         queue = Queue()
         cache = {}
-        traversal = []
         for vertex in self.vertices:
             cache[vertex] = "not visited"
         cache[starting_vertex] = "to visit"
@@ -54,8 +53,7 @@ class Graph:
                     queue.enqueue(v)
             queue.dequeue()
             cache[u] = "visited"
-            traversal.append(u)
-        print(traversal)
+            print(u)
 
 
     def dft(self, starting_vertex):
