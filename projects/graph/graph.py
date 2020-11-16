@@ -43,50 +43,59 @@ class Graph:
         cache = {}
         traversal = []
         for vertex in self.vertices:
-            cache[vertex] = "white"
-        cache[starting_vertex] = "gray"
+            cache[vertex] = "not visited"
+        cache[starting_vertex] = "to visit"
         queue.enqueue(starting_vertex)
         while queue.size() > 0:
             u = queue.queue[0]
             for v in self.get_neighbors(u):
-                if cache[v] == "white":
-                    cache[v] = "gray"
+                if cache[v] == "not visited":
+                    cache[v] = "to visit"
                     queue.enqueue(v)
             queue.dequeue()
-            cache[u] = "black"
+            cache[u] = "visited"
             traversal.append(u)
         print(traversal)
+
+
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        cache = {}
-        traversal = []
-        for vertex in self.vertices:
-            cache[vertex] = "white"
-        cache[starting_vertex] = "gray"
-        current_vertex = starting_vertex
-        while any(value == "white" for value in cache.values()):
-            traversal.append(current_vertex)
-            for neighbor in self.get_neighbors(current_vertex):
-                current_vertex = neighbor
-                cache[current_vertex] = "gray"
+        stack = Stack()
+        visited = set()
+
+        stack.push(starting_vertex)
+
+        while stack.size() > 0:
+            current_node = stack.pop()
+            if current_node not in visited:
+                print(current_node)
+                visited.add(current_node)
+                neighbors = self.get_neighbors(current_node)
+                for neighbor in neighbors:
+                    stack.push(neighbor)
 
 
 
 
-
-
-
-    def dft_recursive(self, starting_vertex):
+    def dft_recursive(self, vertex, visited = set()):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
 
         This should be done using recursion.
         """
-        pass
+        if vertex not in visited:
+            print(vertex)
+            visited.add(vertex)
+            neighbors = self.get_neighbors(vertex)
+            if len(neighbors) == 0:
+                return
+            else:
+                for neighbor in neighbors:
+                    self.dft_recursive(neighbor, visited)
 
 
     def bfs(self, starting_vertex, destination_vertex):
@@ -95,7 +104,23 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        queue = Queue()
+
+        visited = set()
+        queue.enqueue([starting_vertex])
+
+        while queue.size() > 0:
+            current_path = queue.dequeue()
+            current_node = current_path[-1]
+
+            if current_node == destination_vertex:
+                return current_path
+            if current_node not in visited:
+                visited.add(current_node)
+                neighbors = self.get_neighbors(current_node)
+                for neighbor in neighbors:
+                    path_copy = current_path + [neighbor]
+                    queue.enqueue(path_copy)
 
     def dfs(self, starting_vertex, destination_vertex):
         """
