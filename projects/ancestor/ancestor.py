@@ -18,20 +18,33 @@ def make_neighbors(l):
         if t[1] in graph:
             graph[t[1]].add(t[0])
         else:
-            graph[t[1]] = set(t[0])
+            graph[t[1]] = set()
+            graph[t[1]].add(t[0])
     return graph
 
-def earliest_ancestor(ancestors, starting_node):
+path = []
+visited = set()
+
+def earliest_ancestor(ancestors, starting_node, path = [], visited = set()):
     neighbor_graph = make_neighbors(ancestors)
+    print(neighbor_graph)
+    print(starting_node)
+    print(path)
     # need to return ancestor node farthest from starting node
     # must move from starting_node -> parent node -> parent node, no child nodes, else it's not an ancestor
-    if starting_node not in neighbor_graph:
-        #if node isn't in graph dict, it has no parents
+    if starting_node not in neighbor_graph and len(path) == 0:
         return -1
-    parents = neighbor_graph[starting_node]
+    if starting_node not in visited:
+        visited.add(starting_node)
+    path.append(starting_node)
     # need to travel graph dict for each parent, stopping when run out of ancestors
     # then check which path is longer and return last ancestor of that path
-
-
-
-
+    try:
+        parents = neighbor_graph[starting_node]
+        for parent in parents:
+            if parent not in visited:
+                new_path = earliest_ancestor(ancestors, parent, path, visited)
+                if new_path is not None:
+                    return new_path
+    except KeyError:
+        return starting_node
